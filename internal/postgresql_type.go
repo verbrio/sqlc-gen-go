@@ -5,10 +5,10 @@ import (
 	"log"
 	"strings"
 
-	"github.com/sqlc-dev/sqlc-gen-go/internal/opts"
+	"github.com/sqlc-dev/plugin-sdk-go/plugin"
 	"github.com/sqlc-dev/plugin-sdk-go/sdk"
 	"github.com/sqlc-dev/sqlc-gen-go/internal/debug"
-	"github.com/sqlc-dev/plugin-sdk-go/plugin"
+	"github.com/sqlc-dev/sqlc-gen-go/internal/opts"
 )
 
 func parseIdentifierString(name string) (*plugin.Identifier, error) {
@@ -38,7 +38,7 @@ func postgresType(req *plugin.GenerateRequest, options *opts.Options, col *plugi
 	columnType := sdk.DataType(col.Type)
 	notNull := col.NotNull || col.IsArray
 	driver := parseDriver(options.SqlPackage)
-	emitPointersForNull := driver.IsPGX() && options.EmitPointersForNullTypes
+	emitPointersForNull := (driver.IsPGX() || driver.IsGoFr()) && options.EmitPointersForNullTypes
 
 	switch columnType {
 	case "serial", "serial4", "pg_catalog.serial4":
@@ -168,6 +168,7 @@ func postgresType(req *plugin.GenerateRequest, options *opts.Options, col *plugi
 	case "json":
 		switch driver {
 		case opts.SQLDriverPGXV5:
+		case opts.SQLDriverGoFr:
 			return "[]byte"
 		case opts.SQLDriverPGXV4:
 			return "pgtype.JSON"
@@ -184,6 +185,7 @@ func postgresType(req *plugin.GenerateRequest, options *opts.Options, col *plugi
 	case "jsonb":
 		switch driver {
 		case opts.SQLDriverPGXV5:
+		case opts.SQLDriverGoFr:
 			return "[]byte"
 		case opts.SQLDriverPGXV4:
 			return "pgtype.JSONB"
