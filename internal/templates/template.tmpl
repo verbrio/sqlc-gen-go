@@ -25,6 +25,8 @@ import (
 
 {{if .SQLDriver.IsPGX }}
 	{{- template "dbCodeTemplatePgx" .}}
+{{else if .SQLDriver.IsGoFr }}
+	{{- template "dbCodeTemplateGofr" .}}
 {{else}}
 	{{- template "dbCodeTemplateStd" .}}
 {{end}}
@@ -57,6 +59,8 @@ import (
 {{define "interfaceCode"}}
 	{{if .SQLDriver.IsPGX }}
 		{{- template "interfaceCodePgx" .}}
+	{{else if .SQLDriver.IsGoFr }}
+		{{- template "interfaceCodeGofr" .}}
 	{{else}}
 		{{- template "interfaceCodeStd" .}}
 	{{end}}
@@ -188,6 +192,8 @@ import (
 {{define "queryCode"}}
 {{if .SQLDriver.IsPGX }}
     {{- template "queryCodePgx" .}}
+{{else if .SQLDriver.IsGoFr }}
+    {{- template "queryCodeGofr" .}}
 {{else}}
     {{- template "queryCodeStd" .}}
 {{end}}
@@ -221,6 +227,8 @@ import (
     {{- template "copyfromCodePgx" .}}
 {{else if .SQLDriver.IsGoSQLDriverMySQL }}
     {{- template "copyfromCodeGoSqlDriver" .}}
+{{else if .SQLDriver.IsGoFr }}
+    {{- template "copyfromCodeGofr" .}}
 {{end}}
 {{end}}
 
@@ -250,5 +258,7 @@ import (
 {{define "batchCode"}}
 {{if .SQLDriver.IsPGX }}
     {{- template "batchCodePgx" .}}
+{{else if .SQLDriver.IsGoFr }}
+    {{- template "batchCodeGofr" .}}
 {{end}}
 {{end}}

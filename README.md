@@ -26,6 +26,31 @@ sql:
       sql_package: pgx/v5
 ```
 
+### Supported SQL Packages
+
+The plugin supports multiple SQL drivers through the `sql_package` option:
+
+- `pgx/v4` - PostgreSQL driver using jackc/pgx v4
+- `pgx/v5` - PostgreSQL driver using jackc/pgx v5 (recommended for PostgreSQL)
+- `database/sql` - Standard library database/sql package
+- `gofr` - GoFr framework SQL integration (gofr.dev)
+
+Example with GoFr:
+
+```yaml
+codegen:
+- plugin: golang
+  out: db
+  options:
+    package: db
+    sql_package: gofr
+```
+
+When using GoFr, the generated code will:
+- Use `*gofr.Context` instead of `context.Context`
+- Access the database through `ctx.SQL`
+- Generate GoFr-compatible query methods
+
 ## Building from source
 
 Assuming you have the Go toolchain set up, from the project root you can simply `make all`.

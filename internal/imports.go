@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/sqlc-dev/sqlc-gen-go/internal/opts"
 	"github.com/sqlc-dev/plugin-sdk-go/metadata"
+	"github.com/sqlc-dev/sqlc-gen-go/internal/opts"
 )
 
 type fileImports struct {
@@ -132,6 +132,9 @@ func (i *importer) dbImports() fileImports {
 	case opts.SQLDriverPGXV5:
 		pkg = append(pkg, ImportSpec{Path: "github.com/jackc/pgx/v5/pgconn"})
 		pkg = append(pkg, ImportSpec{Path: "github.com/jackc/pgx/v5"})
+	case opts.SQLDriverGoFr:
+		std = append(std, ImportSpec{Path: "database/sql"})
+		pkg = append(pkg, ImportSpec{Path: "gofr.dev/pkg/gofr/datasource/sql", ID: "gofrSQL"})
 	default:
 		std = append(std, ImportSpec{Path: "database/sql"})
 		if i.Options.EmitPreparedQueries {
@@ -176,6 +179,8 @@ func buildImports(options *opts.Options, queries []Query, uses func(string) bool
 				pkg[ImportSpec{Path: "github.com/jackc/pgconn"}] = struct{}{}
 			case opts.SQLDriverPGXV5:
 				pkg[ImportSpec{Path: "github.com/jackc/pgx/v5/pgconn"}] = struct{}{}
+			case opts.SQLDriverGoFr:
+				pkg[ImportSpec{Path: "gofr.dev/pkg/gofr"}] = struct{}{}
 			default:
 				std["database/sql"] = struct{}{}
 			}
@@ -391,7 +396,12 @@ func (i *importer) queryImports(filename string) fileImports {
 	}
 
 	if anyNonCopyFrom {
-		std["context"] = struct{}{}
+		sqlpkg := parseDriver(i.Options.SqlPackage)
+		if sqlpkg == opts.SQLDriverGoFr {
+			pkg[ImportSpec{Path: "gofr.dev/pkg/gofr"}] = struct{}{}
+		} else {
+			std["context"] = struct{}{}
+		}
 	}
 
 	sqlpkg := parseDriver(i.Options.SqlPackage)
