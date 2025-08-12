@@ -1,7 +1,7 @@
 # sqlc-gen-go
 
 > [!IMPORTANT]  
-> This repository is read-only. It contains a working Go codegen plugin extracted from https://github.com/sqlc-dev/sqlc which you can fork and modify to meet your needs.
+> This repository is a fork to add basic gofr support
 
 See [Building from source](#building-from-source) and [Migrating from sqlc's built-in Go codegen](#migrating-from-sqlcs-built-in-go-codegen) if you want to use a modified fork in your project.
 
@@ -25,31 +25,6 @@ sql:
       package: db
       sql_package: pgx/v5
 ```
-
-### Supported SQL Packages
-
-The plugin supports multiple SQL drivers through the `sql_package` option:
-
-- `pgx/v4` - PostgreSQL driver using jackc/pgx v4
-- `pgx/v5` - PostgreSQL driver using jackc/pgx v5 (recommended for PostgreSQL)
-- `database/sql` - Standard library database/sql package
-- `gofr` - GoFr framework SQL integration (gofr.dev)
-
-Example with GoFr:
-
-```yaml
-codegen:
-- plugin: golang
-  out: db
-  options:
-    package: db
-    sql_package: gofr
-```
-
-When using GoFr, the generated code will:
-- Use `*gofr.Context` instead of `context.Context`
-- Access the database through `ctx.SQL`
-- Generate GoFr-compatible query methods
 
 ## Building from source
 
