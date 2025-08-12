@@ -1,0 +1,48 @@
+{{define "interfaceCodeGofr"}}
+type Querier interface {
+	{{- range .GoQueries}}
+		{{- if eq .Cmd ":one" }}
+			{{range .Comments}}//{{.}}
+			{{end -}}
+			{{.MethodName}}(ctx *gofr.Context, {{.Arg.Pair}}) ({{.Ret.DefineType}}, error)
+		{{- end}}
+		{{- if eq .Cmd ":many" }}
+			{{range .Comments}}//{{.}}
+			{{end -}}
+			{{.MethodName}}(ctx *gofr.Context, {{.Arg.Pair}}) ([]{{.Ret.DefineType}}, error)
+		{{- end}}
+		{{- if eq .Cmd ":exec" }}
+			{{range .Comments}}//{{.}}
+			{{end -}}
+			{{.MethodName}}(ctx *gofr.Context, {{.Arg.Pair}}) error
+		{{- end}}
+		{{- if eq .Cmd ":execrows" }}
+			{{range .Comments}}//{{.}}
+			{{end -}}
+			{{.MethodName}}(ctx *gofr.Context, {{.Arg.Pair}}) (int64, error)
+		{{- end}}
+		{{- if eq .Cmd ":execresult" }}
+			{{range .Comments}}//{{.}}
+			{{end -}}
+			{{.MethodName}}(ctx *gofr.Context, {{.Arg.Pair}}) (sql.Result, error)
+		{{- end}}
+		{{- if eq .Cmd ":execlastid" }}
+			{{range .Comments}}//{{.}}
+			{{end -}}
+			{{.MethodName}}(ctx *gofr.Context, {{.Arg.Pair}}) (int64, error)
+		{{- end}}
+		{{- if eq .Cmd ":copyfrom" }}
+			{{range .Comments}}//{{.}}
+			{{end -}}
+			{{.MethodName}}(ctx *gofr.Context, {{.Arg.SlicePair}}) (int64, error)
+		{{- end}}
+		{{- if or (eq .Cmd ":batchexec") (eq .Cmd ":batchmany") (eq .Cmd ":batchone") }}
+			{{range .Comments}}//{{.}}
+			{{end -}}
+			{{.MethodName}}(ctx *gofr.Context, {{.Arg.SlicePair}}) *{{.MethodName}}BatchResults
+		{{- end}}
+	{{- end}}
+}
+
+var _ Querier = (*Queries)(nil)
+{{end}}
